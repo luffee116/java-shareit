@@ -16,7 +16,7 @@ public class ItemMapper {
                         ItemRequest.builder().id(itemDto.getRequest()).build() :
                         null)
                 .build();
-        }
+    }
 
     public static ItemDto toItemDto(Item item) {
         return ItemDto.builder()

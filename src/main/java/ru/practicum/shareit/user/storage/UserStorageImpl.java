@@ -34,6 +34,7 @@ public class UserStorageImpl implements UserStorage {
         userDb.put(user.getId(), user);
         return user;
     }
+
     /**
      * Обновляет пользователя
      *
