@@ -7,6 +7,7 @@ import ru.practicum.shareit.user.model.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class UserStorageImpl implements UserStorage {
@@ -23,14 +24,7 @@ public class UserStorageImpl implements UserStorage {
     @Override
     public User create(User user) {
         user.setId(idCounter++);
-
-        if (userDb.values()
-                .stream()
-                .map(User::getEmail)
-                .anyMatch(email -> email.equals(user.getEmail()))) {
-            throw new RuntimeException("Email already exists");
-        }
-
+        checkExistEmail(user);
         userDb.put(user.getId(), user);
         return user;
     }
@@ -45,22 +39,24 @@ public class UserStorageImpl implements UserStorage {
      * @throws RuntimeException  если обновляемый email уже используется
      */
     @Override
-    public User update(String userId, User user) {
-        if (userId.equals("null")) {
+    public User update(Long userId, User user) {
+        if (userDb.isEmpty()) {
+            throw new RuntimeException("В базе данных нет пользователей");
+        }
+
+        if (userId == null) {
             checkExistEmail(user);
             Long latestId = userDb.keySet().stream().max(Long::compareTo).get();
             user.setId(latestId);
             userDb.put(latestId, user);
             return userDb.get(latestId);
         } else {
-            if (!userDb.containsKey(Long.parseLong(userId))) {
-                throw new NotFoundException("User not found");
-            }
+            checkUserExist(userId, "Not found user with id " + userId);
             checkExistEmail(user);
-            User userToUpdate = userDb.get(Long.parseLong(userId));
+            User userToUpdate = userDb.get(userId);
             userToUpdate.setEmail(user.getEmail());
             userToUpdate.setName(user.getName());
-            userDb.put(Long.parseLong(userId), userToUpdate);
+            userDb.put(userId, userToUpdate);
             return userToUpdate;
         }
     }
@@ -73,9 +69,7 @@ public class UserStorageImpl implements UserStorage {
      */
     @Override
     public void delete(Long userId) {
-        if (!userDb.containsKey(userId)) {
-            throw new NotFoundException("User not found");
-        }
+        checkUserExist(userId, "Not found user with id " + userId);
         userDb.remove(userId);
     }
 
@@ -87,9 +81,7 @@ public class UserStorageImpl implements UserStorage {
      */
     @Override
     public User getUser(Long userId) {
-        if (!userDb.containsKey(userId)) {
-            throw new NotFoundException("User not found");
-        }
+        checkUserExist(userId, "Not found user with id " + userId);
         return userDb.get(userId);
     }
 
@@ -110,11 +102,30 @@ public class UserStorageImpl implements UserStorage {
      * @throws RuntimeException если email уже используется
      */
     private void checkExistEmail(User user) {
-        if (user.getName() != null) {
-            boolean exist = userDb.values().stream().map(User::getEmail).anyMatch(email -> email.equals(user.getEmail()));
-            if (exist) {
+        if (user.getEmail() != null) {
+            boolean emailExists = userDb.values().stream()
+                    .filter(existingUser -> !existingUser.getId().equals(user.getId()))  // Исключаем текущего пользователя
+                    .map(User::getEmail)
+                    .filter(Objects::nonNull)  // Фильтруем null-значения email
+                    .anyMatch(email -> email.equals(user.getEmail()));  // Теперь email точно не null
+
+            if (emailExists) {
                 throw new RuntimeException("Email already exists");
             }
         }
     }
+
+    /**
+     * Проверяет существование user в базе данных
+     *
+     * @param userId id пользователь для проверки
+     * @throws NotFoundException если пользователь не найден
+     */
+    @Override
+    public void checkUserExist(Long userId, String message) {
+        if (!userDb.containsKey(userId)) {
+            throw new NotFoundException(message);
+        }
+    }
 }
+

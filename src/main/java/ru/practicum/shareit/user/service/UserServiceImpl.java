@@ -24,8 +24,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto update(String id, UserDto user) {
-
+    public UserDto update(Long id, UserDto user) {
         User responseFromDb = userStorage.update(id, UserMapper.toUser(user));
         return UserMapper.toUserDto(responseFromDb);
     }
@@ -44,6 +43,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAll() {
         List<User> responseList = userStorage.getAllUsers();
-        return responseList.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
+        return responseList
+                .stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 }
