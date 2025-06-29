@@ -94,8 +94,8 @@ public class BookingServiceImpl implements BookingService {
                         .map(BookingMapper::toDto)
                         .collect(Collectors.toList());
             case CURRENT:
-                return bookingRepository.
-                        findByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, now, now)
+                return bookingRepository
+                        .findByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(userId, now, now)
                         .stream()
                         .map(BookingMapper::toDto)
                         .collect(Collectors.toList());
