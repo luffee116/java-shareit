@@ -11,6 +11,11 @@ spring:
       connection-timeout: 40000
       maximum-pool-size: 10
 
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
