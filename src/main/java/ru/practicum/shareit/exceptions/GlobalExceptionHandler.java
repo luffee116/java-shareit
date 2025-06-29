@@ -19,4 +19,10 @@ public class GlobalExceptionHandler {
     public ErrorResponse handeUpdateException(UpdateException ex) {
         return new ErrorResponse(ex.getMessage());
     }
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationException(ValidationException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
 }

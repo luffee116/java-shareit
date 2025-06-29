@@ -1,19 +1,25 @@
 package ru.practicum.shareit.item.storage;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-public interface ItemStorage {
-    Item save(Item item);
+@Repository
+public interface ItemStorage extends JpaRepository<Item, Long> {
 
-    Item update(Item item);
+    @Query("SELECT i FROM Item i WHERE i.ownerId = :ownerId ORDER BY i.id")
+    List<Item> findAllByOwnerId(@Param("ownerId") Long ownerId);
 
-    Item findById(Long id);
+    @Query(" select i from Item i " +
+            "where upper(i.name) like upper(concat('%', :text, '%')) " +
+            "   or upper(i.description) like upper(concat('%', :text, '%'))")
+    List<Item> search(@Param("text") String text);
 
-    List<Item> findAllByOwnerId(Long ownerId);
+    @Query("SELECT COUNT(i) FROM Item i WHERE i.ownerId = :ownerId")
+    long countByOwnerId(@Param("ownerId") Long ownerId);
 
-    List<Item> search(String text);
-
-    void deleteById(Long id);
 }

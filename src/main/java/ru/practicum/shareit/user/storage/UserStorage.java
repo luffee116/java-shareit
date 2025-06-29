@@ -1,20 +1,16 @@
 package ru.practicum.shareit.user.storage;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.List;
+public interface UserStorage extends JpaRepository<User, Long> {
 
-public interface UserStorage {
+    boolean existsByEmailAndIdNot(String email, Long excludeId);
 
-    User create(User user);
-
-    User update(Long id, User user);
-
-    void delete(Long userID);
-
-    User getUser(Long userId);
-
-    List<User> getAllUsers();
-
-    void checkUserExist(Long ownerId, String message);
+    default void checkUserExists(Long userId) {
+        if (!existsById(userId)) {
+            throw new NotFoundException("User not found with id " + userId);
+        }
+    }
 }
