@@ -9,6 +9,6 @@ import org.springframework.test.context.ActiveProfiles;
 class ShareItTests {
 	@Test
 	void contextLoads() {
-		// Тест проверяет загрузку контекста
+		// Тест проверяет загрузку контекст
 	}
 }
