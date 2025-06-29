@@ -8,7 +8,7 @@ spring:
     password: "12345"
     driver-class-name: org.postgresql.Driver
     hikari:
-      connection-timeout: 30000
+      connection-timeout: 40000
       maximum-pool-size: 10
 
   jpa:
@@ -19,10 +19,6 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.yaml
 
 server:
   port: 8080
