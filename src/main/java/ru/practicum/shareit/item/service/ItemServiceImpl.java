@@ -119,8 +119,8 @@ public class ItemServiceImpl implements ItemService {
         User user = userStorage.findById(authorId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        boolean hasBooked = bookingRepository.
-                existsByBookerIdAndItemIdAndEndBefore(authorId, itemId, LocalDateTime.now());
+        boolean hasBooked = bookingRepository
+                .existsByBookerIdAndItemIdAndEndBefore(authorId, itemId, LocalDateTime.now());
 
         if (!hasBooked) {
             throw new ValidationException("User has not booked this item or booking is not completed");
