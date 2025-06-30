@@ -32,8 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto update(Long id, UserDto userDto) {
-        User existingUser = userStorage.findById(id)
-                .orElseThrow(() -> new UserException("User with id " + id + " not found"));
+        User existingUser = checkUserExists(id);
 
         if (userDto.getEmail() != null &&
                 userStorage.existsByEmailAndIdNot(userDto.getEmail(), id)) {
@@ -51,8 +50,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto get(Long userId) {
-        User existingUser = userStorage.findById(userId)
-                .orElseThrow(() -> new UserException("User with id " + userId + " not found"));
+        User existingUser = checkUserExists(userId);
         return UserMapper.toUserDto(existingUser);
     }
 
@@ -71,5 +69,9 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
+    }
+
+    private User checkUserExists(Long userId) {
+        return userStorage.findById(userId).orElseThrow(() -> new UserException("User with id " + userId + " not found"));
     }
 }

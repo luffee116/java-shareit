@@ -45,8 +45,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDto updateItem(Long itemId, ItemDto itemDto, Long ownerId) {
-        Item existingItem = itemStorage.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Item not found"));
+        Item existingItem = checkItemExist(itemId);
 
         checkOwnerExist(ownerId);
         checkItemOwner(ownerId, existingItem);
@@ -66,8 +65,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDtoResponse getItemById(Long itemId, Long userId) {
-        Item item = itemStorage.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Item not found"));
+        Item item = checkItemExist(itemId);
 
         if (!item.getOwnerId().equals(userId)) {
             Collection<Booking> bookings = bookingRepository.findByItemId(item.getId());
@@ -88,7 +86,10 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getAllItemsByOwner(Long ownerId) {
         checkOwnerExist(ownerId);
         return itemStorage.findAllByOwnerId(ownerId).stream()
-                .map(ItemMapper::toItemDto)
+                .map(item -> {
+                    addBookingsAndCommentsInfo(item);
+                    return ItemMapper.toItemDto(item);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -106,18 +107,20 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void deleteItem(Long itemId) {
-        if (!itemStorage.existsById(itemId)) {
-            throw new NotFoundException("Item not found");
-        }
+        checkItemExist(itemId);
+
         itemStorage.deleteById(itemId);
     }
 
     @Override
     public CommentDto createComment(Long authorId, Long itemId, CommentDto commentDto) {
-        Item item = itemStorage.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Item not found"));
+        if (commentDto.getText().isBlank()) {
+            throw new ValidationException("Comment text is empty");
+        }
+
+        Item item = checkItemExist(itemId);
         User user = userStorage.findById(authorId)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found with id: " + authorId));
 
         boolean hasBooked = bookingRepository
                 .existsByBookerIdAndItemIdAndEndBefore(authorId, itemId, LocalDateTime.now());
@@ -181,5 +184,9 @@ public class ItemServiceImpl implements ItemService {
         return commentRepository.findAllByItemId(itemId).stream()
                 .map(CommentMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    private Item checkItemExist(Long itemId) {
+        return itemStorage.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found with id: " + itemId));
     }
 }
