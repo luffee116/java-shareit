@@ -1,9 +1,12 @@
 package ru.practicum.shareit.booking.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.item.model.Item;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,4 +45,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Boolean existsByBookerIdAndItemIdAndEndBefore(
             Long bookerId, Long itemId, LocalDateTime date);
+
+    @Query("SELECT b FROM Booking b " +
+            "WHERE b.item IN :items AND b.status = 'APPROVED' " +
+            "ORDER BY b.start DESC")
+    List<Booking> findApprovedBookingsForItems(@Param("items") List<Item> items);
 }

@@ -34,7 +34,7 @@ public class BookingServiceImpl implements BookingService {
         User booker = checkUserExist(userId);
         Item item = checkItemExist(bookingDto.getItemId());
 
-        validateBookingRequest(bookingDto, item, userId);
+        validateBookingRequest(item, userId);
 
         Booking booking = BookingMapper.toBooking(bookingDto);
         booking.setBooker(booker);
@@ -170,7 +170,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    private void validateBookingRequest(BookingRequestDto bookingDto, Item item, Long userId) {
+    private void validateBookingRequest(Item item, Long userId) {
         if (item.getOwnerId().equals(userId)) {
             throw new ValidationException("Owner cannot book own item");
         }

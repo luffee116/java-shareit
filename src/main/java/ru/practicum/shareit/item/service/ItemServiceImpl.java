@@ -83,12 +83,52 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getAllItemsByOwner(Long ownerId) {
+    public List<ItemDtoResponse> getAllItemsByOwner(Long ownerId) {
         checkOwnerExist(ownerId);
-        return itemStorage.findAllByOwnerId(ownerId).stream()
+        List<Item> items = itemStorage.findAllByOwnerId(ownerId);
+        if (items.isEmpty()) {
+            return Collections.emptyList();
+        }
+        // Получаем список всех бронирований вещи
+        List<Booking> bookings = bookingRepository.findApprovedBookingsForItems(items);
+
+        // Создаем мапу
+        Map<Long, List<Booking>> bookingsByItem = bookings.stream()
+                .collect(Collectors.groupingBy(b -> b.getItem().getId()));
+
+        //Получаем комментарии
+        List<Comment> comments = commentRepository.findCommentsForItems(items);
+
+        Map<Long, List<Comment>> commentsByItem = comments.stream()
+                .collect(Collectors.groupingBy(c -> c.getItem().getId()));
+
+        return items.stream()
                 .map(item -> {
-                    addBookingsAndCommentsInfo(item);
-                    return ItemMapper.toItemDto(item);
+                    ItemDtoResponse dto = ItemMapper.toItemDtoResponse(item);
+
+                    // Добавляем бронирования из мапы
+                    List<Booking> itemBookings = bookingsByItem.getOrDefault(item.getId(), Collections.emptyList());
+                    if (!itemBookings.isEmpty()) {
+                        // Находим lastBooking
+                        itemBookings.stream()
+                                .filter(b -> b.getEnd().isBefore(LocalDateTime.now()))
+                                .max(Comparator.comparing(Booking::getEnd))
+                                .ifPresent(last -> dto.setLastBooking(last.getEnd()));
+
+                        // Находим ближайшее будущее бронирование (nextBooking)
+                        itemBookings.stream()
+                                .filter(b -> b.getStart().isAfter(LocalDateTime.now()))
+                                .min(Comparator.comparing(Booking::getStart))
+                                .ifPresent(next -> dto.setNextBooking(next.getStart()));
+                    }
+
+                    // Добавляем комментарии из мапы
+                    List<Comment> itemComments = commentsByItem.getOrDefault(item.getId(), Collections.emptyList());
+                    dto.setComments(itemComments.stream()
+                            .map(CommentMapper::toDto)
+                            .collect(Collectors.toList()));
+
+                    return dto;
                 })
                 .collect(Collectors.toList());
     }
@@ -117,6 +157,7 @@ public class ItemServiceImpl implements ItemService {
         if (commentDto.getText().isBlank()) {
             throw new ValidationException("Comment text is empty");
         }
+
 
         Item item = checkItemExist(itemId);
         User user = userStorage.findById(authorId)
