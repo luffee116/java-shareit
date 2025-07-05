@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.model;
+package ru.practicum.shareit.item.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,23 +10,30 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "requests")
 @Data
-@Builder
-@NoArgsConstructor
+@Builder(toBuilder = true)
+@Table(name = "comments")
 @AllArgsConstructor
-public class ItemRequest {
+@NoArgsConstructor
+public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String description;
+    private String text;
 
+    @JoinColumn(name = "item_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "requestor_id", nullable = false)
-    private User requester;
+    private Item item;
 
-    @Column(nullable = false)
+    @JoinColumn(name = "author_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User author;
+
+    @Column(name = "created", nullable = false)
     private LocalDateTime created;
+
+
 }
