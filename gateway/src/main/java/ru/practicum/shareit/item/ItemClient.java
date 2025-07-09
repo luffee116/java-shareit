@@ -28,23 +28,23 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> create(Long userId, ItemRequestDto itemDto) {
-        return post(API_PREFIX, userId, itemDto);
+        return post("", userId, itemDto);
     }
 
     public ResponseEntity<Object> update(Long userId, Long itemId, ItemRequestDto itemDto) {
-        return patch(API_PREFIX + "/" + itemId, userId, itemDto);
+        return patch("/" + itemId, userId, itemDto);
     }
 
     public ResponseEntity<Object> getById(Long userId, Long itemId) {
-        return get(API_PREFIX + "/" + itemId, userId);
+        return get( "/" + itemId, userId);
     }
 
     public ResponseEntity<Object> getAllByUser(Long userId) {
-        return get(API_PREFIX, userId);
+        return get("/",userId);
     }
 
     public ResponseEntity<Object> search(String text) {
         Map<String, Object> params = Map.of("text", text);
-        return get(API_PREFIX + "/search?text={text}", null, params);
+        return get( "/search?text={text}", null, params);
     }
 }

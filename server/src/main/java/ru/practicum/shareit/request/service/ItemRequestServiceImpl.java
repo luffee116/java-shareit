@@ -28,10 +28,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto createRequest(Long userId, ItemRequestInputDto requestDto) {
-        User requester = UserMapper.toUser(userService.get(userId));
+        User requestor = UserMapper.toUser(userService.get(userId));
         ItemRequest request = ItemRequest.builder()
                 .description(requestDto.getDescription())
-                .requester(requester)
+                .requestor(requestor)
                 .created(LocalDateTime.now())
                 .build();
 
@@ -42,7 +42,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> getUserRequests(Long userId) {
         userService.checkUserExists(userId);
-        List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdOrderByCreatedDesc(userId);
+        List<ItemRequest> requests = itemRequestRepository.findAllByRequestorIdOrderByCreatedDesc(userId);
         return requests.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());

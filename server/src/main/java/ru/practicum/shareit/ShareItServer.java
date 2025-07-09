@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "ru.practicum.shareit")
 @EntityScan(basePackages = "ru.practicum.shareit")
-public class ShareItApp {
+public class ShareItServer {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ShareItApp.class, args);
+		SpringApplication.run(ShareItServer.class, args);
 	}
 
 }

@@ -24,7 +24,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=shareit
 
   db:
-    image: postgres:15.4
+    image: postgres:14
     container_name: postgres
     ports:
       - "6541:5432"

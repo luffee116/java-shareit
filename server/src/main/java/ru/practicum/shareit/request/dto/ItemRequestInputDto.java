@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemRequestInputDto {
-    @NotBlank(message = "Описание запроса не может быть пустым")
     private String description;
 }
 

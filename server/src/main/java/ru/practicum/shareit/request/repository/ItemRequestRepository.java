@@ -10,8 +10,8 @@ import java.util.List;
 
 @Repository
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
-    List<ItemRequest> findAllByRequesterIdOrderByCreatedDesc(Long requesterId);
+    List<ItemRequest> findAllByRequestorIdOrderByCreatedDesc(Long requestorId);
 
-    @Query("SELECT r FROM ItemRequest r WHERE r.requester.id <> ?1 ORDER BY r.created DESC")
+    @Query("SELECT r FROM ItemRequest r WHERE r.requestor.id <> ?1 ORDER BY r.created DESC")
     List<ItemRequest> findAllByOtherUsers(Long userId, Pageable pageable);
 }
