@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,5 +57,4 @@ public class BookingController {
             @RequestParam(defaultValue = "10") Integer size) {
         return ResponseEntity.ok(bookingService.getOwnerBookings(userId, BookingState.valueOf(state.toUpperCase()), from, size));
     }
-
 }

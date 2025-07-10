@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.exceptions.UpdateException;
@@ -158,13 +159,12 @@ public class ItemServiceImpl implements ItemService {
             throw new ValidationException("Comment text is empty");
         }
 
-
         Item item = checkItemExist(itemId);
         User user = userStorage.findById(authorId)
                 .orElseThrow(() -> new NotFoundException("User not found with id: " + authorId));
 
         boolean hasBooked = bookingRepository
-                .existsByBookerIdAndItemIdAndEndBefore(authorId, itemId, LocalDateTime.now());
+                .existsByBookerIdAndItemIdAndEndBeforeAndStatus(authorId, itemId, LocalDateTime.now(), BookingStatus.APPROVED);
 
         if (!hasBooked) {
             throw new ValidationException("User has not booked this item or booking is not completed");

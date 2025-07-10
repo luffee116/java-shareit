@@ -70,6 +70,7 @@ public class UserServiceImpl implements UserService {
                 .map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
     }
+
     @Override
     public User checkUserExists(Long userId) {
         return userStorage.findById(userId).orElseThrow(() -> new UserException("User with id " + userId + " not found"));

@@ -73,12 +73,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
                 .id(request.getId())
                 .description(request.getDescription())
                 .created(request.getCreated())
+                .requestorId(request.getRequestor().getId())
                 .items(items)
                 .build();
     }
-
-
-
-
-
 }

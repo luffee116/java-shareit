@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 public class UserRequestDto {
     private Long id;
+    @NotBlank
     private String name;
     @NotBlank
     @Email

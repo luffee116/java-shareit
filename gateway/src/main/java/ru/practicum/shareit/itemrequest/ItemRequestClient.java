@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.itemrequest.dto.ItemRequestCreateDto;
-import ru.practicum.shareit.itemrequest.dto.ItemRequestResponseDto;
 
 import java.util.Map;
 
@@ -26,6 +25,7 @@ public class ItemRequestClient extends BaseClient {
                         .build()
         );
     }
+
     public ResponseEntity<Object> createRequest(Long userId, ItemRequestCreateDto requestDto) {
         return post("", userId, requestDto);
     }

@@ -43,8 +43,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByItemId(Long itemId);
 
-    Boolean existsByBookerIdAndItemIdAndEndBefore(
-            Long bookerId, Long itemId, LocalDateTime date);
+    Boolean existsByBookerIdAndItemIdAndEndBeforeAndStatus(
+            Long bookerId, Long itemId, LocalDateTime date, BookingStatus status);
 
     @Query("SELECT b FROM Booking b " +
             "WHERE b.item IN :items AND b.status = 'APPROVED' " +

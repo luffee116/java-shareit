@@ -8,7 +8,7 @@ public class UserMapper {
 
     public static User toUser(final UserDto userDto) {
         return User.builder()
-                .id(0L)
+                .id(userDto.getId())
                 .name(userDto.getName())
                 .email(userDto.getEmail())
                 .build();
