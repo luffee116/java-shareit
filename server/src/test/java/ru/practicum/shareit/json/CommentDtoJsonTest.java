@@ -38,14 +38,13 @@ class CommentDtoJsonTest {
 
     @Test
     void deserializeCommentDto() throws Exception {
-        String content = """
-{
-    "id": 1,
-    "text": "Очень полезная вещь",
-    "authorName": "Иван Иванов",
-    "created": "2025-07-11T12:00:00"
-}
-""";
+        String content = "{\n" +
+                "  \"id\": 1,\n" +
+                "  \"text\": \"Очень полезная вещь\",\n" +
+                "  \"authorName\": \"Иван Иванов\",\n" +
+                "  \"created\": \"2025-07-11T12:00:00\"\n" +
+                "}";
+
 
         CommentDto dto = json.parseObject(content);
 

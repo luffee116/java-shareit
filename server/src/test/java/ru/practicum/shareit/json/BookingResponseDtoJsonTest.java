@@ -50,26 +50,25 @@ public class BookingResponseDtoJsonTest {
 
     @Test
     void deserializeBookingResponseDto() throws Exception {
-        String content = """
-                {
-                  "id": 100,
-                  "start": "2025-07-15T12:00:00",
-                  "end": "2025-07-16T12:00:00",
-                  "status": "APPROVED",
-                  "booker": {
-                    "id": 1,
-                    "name": "Иван",
-                    "email": "ivan@example.com"
-                  },
-                  "item": {
-                    "id": 2,
-                    "name": "Дрель",
-                    "description": "Описание",
-                    "available": true,
-                    "requestId": 3
-                  }
-                }
-                """;
+        String content = "{\n" +
+                "  \"id\": 100,\n" +
+                "  \"start\": \"2025-07-15T12:00:00\",\n" +
+                "  \"end\": \"2025-07-16T12:00:00\",\n" +
+                "  \"status\": \"APPROVED\",\n" +
+                "  \"booker\": {\n" +
+                "    \"id\": 1,\n" +
+                "    \"name\": \"Иван\",\n" +
+                "    \"email\": \"ivan@example.com\"\n" +
+                "  },\n" +
+                "  \"item\": {\n" +
+                "    \"id\": 2,\n" +
+                "    \"name\": \"Дрель\",\n" +
+                "    \"description\": \"Описание\",\n" +
+                "    \"available\": true,\n" +
+                "    \"requestId\": 3\n" +
+                "  }\n" +
+                "}";
+
 
         BookingResponseDto result = json.parseObject(content);
 
