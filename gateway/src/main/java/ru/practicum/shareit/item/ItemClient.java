@@ -44,6 +44,9 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> search(String text) {
+        if (text.trim().isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
         Map<String, Object> params = Map.of("text", text);
         return get("/search?text={text}", null, params);
     }

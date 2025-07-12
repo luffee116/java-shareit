@@ -136,9 +136,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDtoResponse> searchItems(String text) {
-        if (text.trim().isEmpty()) {
-            return Collections.emptyList();
-        }
         List<Item> items = itemStorage.search(text).stream()
                 .filter(Item::getAvailable)
                 .toList();

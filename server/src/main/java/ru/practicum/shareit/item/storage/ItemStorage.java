@@ -24,4 +24,7 @@ public interface ItemStorage extends JpaRepository<Item, Long> {
 
     List<Item> findItemsByRequestId(@Param("requestId") Long requestId);
 
+    @Query("SELECT i FROM Item i WHERE i.request.id IN :requestIds")
+    List<Item> findAllByRequestIds(@Param("requestIds") List<Long> requestIds);
+
 }
