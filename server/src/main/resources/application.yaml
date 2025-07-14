@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: shareit
+
+  datasource:
+    url: jdbc:postgresql://localhost:6541/shareit
+    username: shareit
+    password: shareit
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 40000
+      maximum-pool-size: 10
+
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: 9090
+
+logging:
+  level:
+    org.springframework.orm.jpa: INFO
+    org.springframework.transaction: INFO
+    org.springframework.transaction.interceptor: TRACE
+    org.springframework.orm.jpa.JpaTransactionManager: DEBUG
+    org.hibernate.sql: DEBUG
+    org.hibernate.type: TRACE
+    org.hibernate.orm.jdbc.bind: TRACE
